@@ -1,0 +1,3 @@
+Pokecenter = {
+  Celadon = "Pokecenter Celadon"
+}

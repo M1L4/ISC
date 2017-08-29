@@ -1,0 +1,10 @@
+Stat = {
+  HEALTH = "HEALTH",
+  ATTACK = "ATTACK",
+  DEFENCE = "DEFENCE",
+  SPATTACK = "SPATTACK",
+  SPDEFENCE = "SPDEFENCE",
+  SPEED = "SPEED",
+}
+
+return Stat

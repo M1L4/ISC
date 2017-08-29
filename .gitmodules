@@ -1,0 +1,3 @@
+[submodule "Externas/libs/routing/proShinePathfinder"]
+	path = Externas/libs/routing/proShinePathfinder
+	url = ../../Zonz/ProShinePathfinder.git
