@@ -18,7 +18,11 @@ local Item = {
     --misc
     POKEDEX = "Pokedex",
     POTION = "Potion",
-    LEFTOVERS = "Leftovers"
+    LEFTOVERS = "Leftovers",
+
+    --battle
+    MONEY = "Pokedollar(s)",
+    EXP = "Exp",
 }
 
 return Item

@@ -1,4 +1,5 @@
-BattleMessage = require "libs.battle.enum.messages"
+local BattleMessage = require "libs.battle.enum.messages"
+local Item = require "libs.game.enum.items"
 DialogManager = {}
 
 local berry_tree = nil
@@ -6,7 +7,7 @@ function DialogManager:getEarnings(msg)
     --retrieve vars from regex expression
     local item, amount = nil, nil
     if string.match(msg, BattleMessage.EXP) then
-        item = "EXP"
+        item = Item.EXP
         amount = string.match(msg, BattleMessage.EXP)
 
     elseif string.match(msg, BattleMessage.FOUND) then

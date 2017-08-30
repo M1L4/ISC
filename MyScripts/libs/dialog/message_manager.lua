@@ -39,14 +39,23 @@ function DialogManager:getEarnings(msg)
 end
 
 function DialogManager:getLosses(msg)
-    --Escape ropes
+    local item, amount = nil, nil
+    if string.match(msg, DialogMessage.ON_ROAD_NURSE_VISITED) then
+        item = Item.MONEY
+        amount = 2500
+    end
+
+    --Escape
     --Berries
     --Pokeballs
+    return item, amount
 end
 
 function DialogManager:isPkmCenterVisited(msg)
     --TODO: exceptions nurses in Lavender tower, Indigo Platea Center, ...
     --or aunts, free lancer nurses...
+
+    --Seafoam working!
     return string.match(msg, DialogMessage.PKM_CENTER_VISITED)
 end
 

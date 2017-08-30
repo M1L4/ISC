@@ -34,6 +34,8 @@ DialogMessage = {
     SHOP_OPENED = "What would you like to buy today?",
 
     PKM_CENTER_VISITED = "There you go, take care of them!",  --fits Seafoam B4F Nurse
+
+    ON_ROAD_NURSE_VISITED = "Because I am having to transport healing items here, for use. I will have to ask for a small charge"
 }
 
 return DialogMessage

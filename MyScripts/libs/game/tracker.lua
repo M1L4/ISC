@@ -4,8 +4,7 @@ local DialogMessageManager = require "libs.dialog.message_manager"
 require "libs.util.string"
 
 
-local MONEY = "Pokedollar(s)"
-local EXP = "EXP"
+
 
 API = require "libs.util.api"
 local Tracker = API:new()
@@ -47,7 +46,7 @@ function Tracker:_startTracking()
     --needed for bot time calc | doesn't reset until script changed
     --TODO: reset when bot account changed
     self.start_time = self.start_time or os.time()
-    self.earnings = self.earnings or { [MONEY] = 0, [EXP] = 0 }  --setting make default prints
+    self.earnings = self.earnings or { [Item.MONEY] = 0, [Item.EXP] = 0 }  --setting make default prints
     self.losses = self.losses or {}
     --self.paused_seconds = 0
 
@@ -145,18 +144,18 @@ end
 
 
 function Tracker:printEarningsMain()
-    for _, item in pairs({ MONEY, EXP }) do
+    for _, item in pairs({ Item.MONEY, Item.EXP }) do
         local amount = self.earnings[item]
 
-        --money and exp gained, will be averaged
+        --Item.MONEY and Item.EXP gained, will be averaged
         local avgMin = math.floor(amount / self:_getMinutesElapsed())
         local avgH = math.floor(amount / self:_getHoursElapsed())
 
         local align = "\t"
-        if item == EXP then align = "\t\t" end
+        if item == Item.EXP then align = "\t\t" end
 
         log("INFO | " .. item .. ":"..align
-            --trim exp to 2 digits after comma
+            --trim Item.EXP to 2 digits after comma
             .. kFormatter(amount) .. " total | "
             .. kFormatter(avgMin) .. " per min | "
             .. kFormatter(avgH) .. " per hour")
@@ -168,17 +167,17 @@ end
 --- @type : void
 function Tracker:printEarningsRest()
     for item, amount in pairs(self.earnings) do
-        if item ~= MONEY and item ~= EXP then
+        if item ~= Item.MONEY and item ~= Item.EXP then
             --prints items gained
             log("INFO | " .. tostring(amount) .. "\t" .. item)
         end
     end
 
     if self.losses then log("INFO | --Losses--") end
-    --TODO: substract the amount lost, from netto money earned
+    --TODO: substract the amount lost, from netto Item.MONEY earned
     --prints items used
     for item, amount in pairs(self.losses) do
-        if item ~= MONEY then
+        if item ~= Item.MONEY then
             log("INFO | " .. tostring(amount) .. ": " .. item)
         end
     end
