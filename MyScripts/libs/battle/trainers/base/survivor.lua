@@ -24,6 +24,14 @@ function Survivor:onPathAction()
         --TODO: with the integration of trainer battles, this should be updated to last visited
         return pathfinder.useNearestPokecenter(getMapName())
     end
+
+    --increase survivability by setting bulk as last pokemon
+    local highestLvlPkm = TeamManager.getHighestPkmAlive()
+    local lastPkm = TeamManager.getLastPkmAlive()
+    if highestLvlPkm ~= lastPkm then
+        log("DEBUG | survivor swap")
+        return swapPokemon(highestLvlPkm, lastPkm) end
+
 end
 
 function Survivor:onBattleAction()
@@ -36,6 +44,7 @@ function Survivor:onBattleAction()
         or BattleManager.useAnyAttack()                     --5. we try to use non-damaging attack
         or BattleManager.useAnyMove()                       --6. we try to use garbage items
     end
+
 
     --TODO: status checks - e.g.:
     -- if  active pkm sleeping

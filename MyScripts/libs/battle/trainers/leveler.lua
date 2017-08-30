@@ -82,22 +82,29 @@ end
 function Leveler:_onPathAction()
 
     --all leveled up,
-    if self.lvl_cap and
-        not TeamManager.hasPkmToLvl(self.lvl_cap) then
-        return logout("INFO | All PKM have reached targeted lv cap.")
+    if self.lvl_cap and not TeamManager.getPkmToLvl(self.lvl_cap) then
+        return log("INFO | All PKM have reached targeted lv cap.")
     end
 
     -- check starter
-    local starter_id = TeamManager.getStarterPkm()
-    if self.tracker.wild_encounters > 0                         -- min 1 wild encounter needed to guess map lvl
-        and not self.switch_in                                  -- if pkm stronger than map lvl and fights on its own
-        and not BattleManager.isUsable(starter_id)              -- it needs usable attacks
-        or not TeamManager.isPkmToLvl(starter_id, self.lvl_cap) -- or it is already level capped
+    local starter_id = TeamManager.getStarter()
+    log("DEBUG | wild_encounters: "..tostring(self.tracker.wild_encounters > 0))
+    log("DEBUG | no switch_in: "..tostring(not self.switch_in).."\t("..tostring(self.switch_in)..")")
+    log("DEBUG | unusable: "..tostring(not BattleManager.isUsable(starter_id)))
+    log("DEBUG | lvl capped: "..tostring(not TeamManager.isPkmToLvlAlive(starter_id, self.lvl_cap)))
+
+
+
+    if self.tracker.wild_encounters > 0                                 -- min 1 wild encounter needed to guess map lvl
+        and not self.switch_in                                          -- if pkm stronger than map lvl and fights on its own
+        and not BattleManager.isUsable(starter_id)                      -- it needs usable attacks
+        or not TeamManager.isPkmToLvlAlive(starter_id, self.lvl_cap)    -- or it is already level capped
 
     then
         --swarp starter to lowest leveled pkm
         local new_starter_id = TeamManager.getLowestPkmToLvl(self.lvl_cap)
         if new_starter_id and starter_id ~= new_starter_id then
+            log("DEBUG | levler swap")
             return swapPokemon(new_starter_id, starter_id)
         end
     end
@@ -109,7 +116,7 @@ function Leveler:_onPathAction()
     if TeamManager.giveLeftoversTo(leftovers_target) then return true end
 
     --all leveling pkm dead, so leftovers given to first usable pkm and moving towards pkm center
-    if not TeamManager.hasUsablePkmToLvl(self.lvl_cap) then return pathfinder.useNearestPokecenter(getMapName()) end
+    if not TeamManager.getUsablePkmToLvl(self.lvl_cap) then return pathfinder.useNearestPokecenter(getMapName()) end
 end
 
 function Leveler:_onBattleAction()

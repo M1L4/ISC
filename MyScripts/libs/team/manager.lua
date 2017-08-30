@@ -1,12 +1,32 @@
 --enums
 local Item = require "libs.game.enum.items"
 local Stat = require "libs.game.enum.stats"
+local Ability = require "libs.game.enum.abilities"
 --libs
 local BattleManager = require "libs.battle.manager"
-require "libs.util.collection" --imports Set class
+require "libs.util.collection" --imports Set class, and max() method
 
+
+
+--comparers
+local function maxLvl(a, b) return getPokemonLevel(b) >= getPokemonLevel(a) end     --lesser **equal** is necesarry to avoid swaping same lvled pkm
+local function minLvl(a, b) return getPokemonLevel(b) <= getPokemonLevel(a) end     --lesser **equal** is necesarry to avoid swaping same lvled pkm
+--misc
+local function first(t) if #t > 0 then return t[1] end end
+local function last(t) if #t > 0 then return t[#t] end end
 
 TeamManager = {}
+--pkm conditions
+function TeamManager.isPkmAlive(i) return getPokemonHealth(i) > 0 end
+function TeamManager.isPkmSync(i, nature) return TeamManager.hasPkmAbility(i, Ability.SYNCHRONIZE) and getPokemonNature(i) == nature end
+function TeamManager.isPkmToLvl(i, lvl_cap) return getPokemonLevel(i) < lvl_cap end
+function TeamManager.isPkmToLvlAlive(i, lvl_cap) return TeamManager.isPkmAlive(i) and TeamManager.isPkmToLvl(i, lvl_cap) end
+function TeamManager.isPkmToLvlUsable(i, lvl_cap) return BattleManager.isUsable(i) and TeamManager.isPkmToLvl(i, lvl_cap) end
+--pkm properties
+function TeamManager.hasPkmItem(i, item) return getPokemonHeldItem(i) == item end
+function TeamManager.hasPkmAbility(i, abilty) return getPokemonAbility(i) == abilty end
+function TeamManager.hasPkmNature(i, nature) return getPokemonNature(i) == nature end
+function TeamManager.hasPkmMove(i, move) return hasMove(i) == move end
 
 --- @summary : healing conditions:
 -- last poke under 50%hp
@@ -52,34 +72,7 @@ end
 --- @return : list of team indexes of all pkm that can be leveled up
 --- @type : table (list of integers)
 function TeamManager.getPkmToLvl(level_cap)
-    local pkm = {}
-
-    for index = 1, getTeamSize() do
-        if TeamManager.isPkmToLvl(index, level_cap) then table.insert(pkm, index) end
-    end
-
-    return pkm
-end
-
---- @summary :
---- @param level_cap:
---- @type level_cap: integer
---- @param index:
---- @type index: integer
---- @return : True, if pkm is levelable | False, if not
---- @type : boolean
-function TeamManager.isPkmToLvl(index, level_cap)
-    local level_cap = level_cap or 100
-    return getPokemonLevel(index) < level_cap
-end
-
---- @summary : Checks if team has pkm to level, given the level_cap set
---- @param level_cap: upper level treshold, 100 by default
---- @type level_cap: integer
---- @return : True, if team has pkm that not have reached level_cap | False, otherwise
---- @type : boolean
-function TeamManager.hasPkmToLvl(level_cap)
-    return #TeamManager.getPkmToLvl(level_cap) > 0
+    return filter(TeamManager.getPkm(), TeamManager.isPkmToLvl, level_cap)
 end
 
 --- @summary : Searches the lowest leveled pkm under given level_cap
@@ -88,7 +81,7 @@ end
 --- @return : team index, of lowest leveled pkm under level_cap | nil, if none exists
 --- @type : integer | nil
 function TeamManager.getLowestPkmToLvl(level_cap)
-    return TeamManager._getLowestPkmToLvl(TeamManager.getPkmToLvl())
+    return compare(TeamManager.getPkmToLvl(), minLvl)
 end
 
 --- @summary : Searches the lowest leveled pkm under given level_cap
@@ -97,27 +90,47 @@ end
 --- @return : team index, of lowest leveled pkm under level_cap | nil, if none exists
 --- @type : integer | nil
 function TeamManager.getLowestUsablePkmToLvl(level_cap)
-    return TeamManager._getLowestPkmToLvl(TeamManager.getUsablePkmToLvl())
+    return compare(TeamManager.getUsablePkmToLvl(), minLvl)
 end
 
-function TeamManager._getLowestPkmToLvl(pkms)
-    local index_min = nil
-    for _, index in pairs(pkms) do
-        index_min = index_min or index
 
-        --didn't find a lambda syntax, pretty I saw one though
-        --index_min = math.min(index, index_min)
+function TeamManager.getPkmAlive()
+    return filter(TeamManager.getPkm(), TeamManager.isPkmAlive)
+end
 
-        if getPokemonHealth(index) > 0 then
-            local lvl = getPokemonLevel(index)
-            local lvl_min = getPokemonLevel(index_min)
+function TeamManager.getFirstPkmAlive()
+    return first(TeamManager.getPkmAlive())
+end
 
-            if lvl < lvl_min then index_min = index end
-        end
+---duplicate, but easy to understand
+function TeamManager.getStarter()
+    return TeamManager.getFirstPkmAlive()
+end
+
+function TeamManager.getLastPkmAlive()
+    return last(TeamManager.getPkmAlive())
+end
+
+function TeamManager.getHighestPkmAlive()
+    return compare(TeamManager.getPkmAlive(), maxLvl)
+end
+
+function TeamManager.getLowestPkmAlive()
+    return compare(TeamManager.getPkmAlive(), minLvl)
+end
+
+function TeamManager.getPkm()
+    local pkm = {}
+    for index = 1, getTeamSize() do
+        table.insert(pkm, index)
     end
-
-    return index_min
+    return pkm
 end
+
+
+
+
+
 
 
 --- @summary : Searches the lowest leveled pkm under given level_cap
@@ -126,9 +139,10 @@ end
 --- @return : team index, of lowest leveled pkm under level_cap | nil, if none exists
 --- @type : integer | nil
 function TeamManager.getRndPkmToLvl(level_cap)
-    if not TeamManager.hasPkmToLvl(level_cap) then return end
+    local pkmToLvl = TeamManager.getPkmToLvl(level_cap)
+    if not pkmToLvl then return end
 
-    local pkm = TeamManager.getPkmToLvl(level_cap)
+    return pkmToLvl[math.random(#pkmToLvl)]
 end
 
 
@@ -138,124 +152,82 @@ end
 --- @return : list of team indexes of all battle-ready pkm that can be leveled up
 --- @type : table (list of integers)
 function TeamManager.getUsablePkmToLvl(level_cap)
-    local pkm = {}
-
-    for _, index in pairs(TeamManager.getPkmToLvl(level_cap)) do
-        if BattleManager.isUsable(index) then table.insert(pkm, index) end
-    end
-
-    return pkm
-end
-
---- @summary : Checks if team has pkm to level, given the level_cap set, that are able to battle
---- @param level_cap: upper level treshold, 100 by default
---- @type level_cap: integer
---- @return : True, if team has battle-ready pkm that not have reached level_cap | False, otherwise
---- @type : boolean
-function TeamManager.hasUsablePkmToLvl(level_cap)
-    for _, _ in pairs(TeamManager.getUsablePkmToLvl(level_cap)) do return true end
+    return filter(TeamManager.getUsablePkm(), TeamManager.isPkmToLvl, level_cap)
 end
 
 
 --- @summary :
 --- @return : 1-6, index of first sync pkm with matching nature | nil, if no team member matches
 --- @type : integer | nil
-function TeamManager.getSyncPkm(Nature)
-    for i = 1, getTeamSize() do
-        if getPokemonAbility(i) == Ability.SYNCHRONIZE
-            and getPokemonNature(i) == Nature then return i
-        end
-    end
+function TeamManager.getSyncPkm(nature)
+    return filter(TeamManager.getPkm(), TeamManager.isSyncPkm, nature)
+end
+
+function TeamManager.getFirstSyncPkm(nature)
+    return first(TeamManager.getSyncPkm(nature))
 end
 
 --- @summary :
 --- @return : 1-6, index of first pkm with matching ability | nil, if no team member matches
 --- @type : integer | nil
-function TeamManager.getAbilityPkm(abilityName)
-    for i = 1, getTeamSize() do
-        if getPokemonAbility(i) == abilityName then return i end
-    end
+function TeamManager.getPkmWithAbility(abilityName)
+    return filter(TeamManager.getPkm(), TeamManager.hasPkmAbility, abilityName)
 end
 
 --- @summary :
 --- @return : 1-6, index of first pkm with matching move | nil, if no team member matches
 --- @type : integer | nil
-function TeamManager.getMovePkm(moveName)
-    for i = 1, getTeamSize() do
-        if hasMove(i, moveName) then return i end
-    end
+function TeamManager.getPkmWithMove(moveName)
+    return filter(TeamManager.getPkm(), TeamManager.hasPkmMove, moveName)
 end
 
-function TeamManager.getUsableMovePkm(moveName)
-    local usablePkm = Set(TeamManager.getUsablePkm())
-    --pokemon with specific move are probaly lesser
-    for _, move_id in pairs(TeamManager.getMovePkm()) do
-        if usablePkm[move_id] then return move_id end
-    end
+function TeamManager.getUsablePkmWithMove(moveName)
+    return filter(TeamManager.getUsablePkm(), TeamManager.hasPkmMove, moveName)
+end
+
+function TeamManager.getFirstUsablePkmWithMove(moveName)
+    return first(TeamManager.getUsablePkmWithMove(moveName))
 end
 
 --- @summary :
 --- @return : 1-6, index of first pkm holding matching item | nil, if no team member matches
 --- @type : integer | nil
-function TeamManager.getItemPkm(ItemName)
-    for i = 1, getTeamSize() do
-        if getPokemonHeldItem(i) == ItemName then return i end
-    end
+function TeamManager.getPkmWithItem(itemName)
+    return filter(TeamManager.getPkm(), TeamManager.hasPkmItem, itemName)
+end
+
+
+function TeamManager.getFirstPkmWithItem(itemName)
+    first(TeamManager.getPkmWithItem(itemName))
 end
 
 
 --- @summary : provides couverage for proShine's unused attacks
 function TeamManager.getUsablePkm()
-    local pkm = {}
-    for index = 1, getTeamSize() do
-        if isPokemonUsable(index)
-            and BattleManager.hasUsableAttack(index) then
-            table.insert(pkm, index)
-        end
-    end
-    return pkm
-end
-
-function TeamManager.getUsablePkmCount()
-    return #TeamManager.getUsablePkm()
+    return filter(TeamManager.getPkm(), BattleManager.isUsable, itemName)
 end
 
 function TeamManager.getFirstUsablePkm()
-    if TeamManager.getUsablePkmCount() > 0 then
-        return TeamManager.getUsablePkm()[1]
-    end
+    return first(TeamManager.getUsablePkm())
 end
 
-function TeamManager.getStarterPkm()
-    for index = 1, getTeamSize() do
-        if getPokemonHealth(index) > 0 then return index end
+
+function TeamManager.giveLeftoversTo(leftoversTarget)
+    --correct pkm already has leftovers
+    if TeamManager.hasPkmItem(leftoversTarget, Item.LEFTOVERS) then return end
+
+    --leftoversTarget not in team range
+    if leftoversTarget < 1 or leftoversTarget > getTeamSize() then
+        log("Error | wrong leftoversTarget: "..tostring(leftoversTarget))
+        return
     end
-end
 
---assuming only one leftovers
---TODO: multiple leftovers
-function TeamManager.giveLeftoversTo(PokemonNeedLeftovers)
-    local PokemonWithLeftovers = TeamManager.getItemPkm(Item.LEFTOVERS)
+    --give leftovers if available
+    if hasItem(Item.LEFTOVERS) then return giveItemToPokemon(Item.LEFTOVERS, leftoversTarget) end
 
-    --hasItem(leftovers) |test if further leftovers are available
-
-
-    if PokemonWithLeftovers then
-        -- now leftovers is on rightpokemon
-        if PokemonNeedLeftovers == PokemonWithLeftovers then return
-
-            -- otherwise take leftover
-        else return takeItemFromPokemon(PokemonWithLeftovers)
-        end
-
-
-    elseif hasItem(Item.LEFTOVERS) and getTeamSize() > 0 then
-        --has leftovers and a team
-
-        if PokemonNeedLeftovers >= 1 and PokemonNeedLeftovers <= getTeamSize() then
-            return giveItemToPokemon(Item.LEFTOVERS, PokemonNeedLeftovers)
-        end
-    end
+    --take leftovers if necessary
+    local pkmWithLeftovers = TeamManager.getFirstPkmWithItem(Item.LEFTOVERS)
+    if pkmWithLeftovers then return takeItemFromPokemon(pkmWithLeftovers) end
 end
 
 return TeamManager

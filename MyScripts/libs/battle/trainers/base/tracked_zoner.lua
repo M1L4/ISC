@@ -37,6 +37,11 @@ function TrackedZoner:init()
     self.registered_pkm_center = nil
     --only go to marts, when doing a checkup in poke center
     self.mart_state = nil
+
+
+    --user variables
+    self.catch_uncaught = nil
+    self.catch_specials = nil
 end
 
 function TrackedZoner:onStart()
@@ -54,13 +59,11 @@ function TrackedZoner:_onPathAction() log("_onPathAction not implemented yet.") 
 function TrackedZoner:_onBattleAction() log("_onBattleAction not implemented yet.") end
 
 --added functions
-function TrackedZoner:setExpZone(area)
-    self.exp_zone = area
-end
+function TrackedZoner:setExpZone(area) self.exp_zone = area end
+function TrackedZoner:setMap(map)      self.exp_map = map end
 
-function TrackedZoner:setMap(map)
-    self.exp_map = map
-end
+function TrackedZoner:setCatchUncaught(catch_uncaught)  self.catch_uncaught = catch_uncaught end
+function TrackedZoner:setCatchSpecials(map) self.catch_specials = catch_specials end
 
 
 --api functions

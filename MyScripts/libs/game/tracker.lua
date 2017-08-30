@@ -23,31 +23,47 @@ function Tracker:init()
     self.heals = 0
 
     --earnings
-    self.earnings = { [MONEY] = 0, [EXP] = 0 }
-    self.losses = {}
+    self.earnings = nil
+    self.losses = nil
 end
 
 
 --bot controls
-function Tracker:onStart()
-    self.start_time = os.time()
-    self.log_time = os.time()
-    self.paused_seconds = 0
-end
-
+function Tracker:onStart()  self:_startTracking() end
+function Tracker:onResume() self:_startTracking() end
 function Tracker:onStop()
+    self:_stopTracking()
     self:printFullLog()
 end
-
 function Tracker:onPause()
-    self._pause_time = os.time()
+    self:_stopTracking()
     self:printFullLog()
 end
 
-function Tracker:onResume()
-    local second_paused = os.difftime(os.time(), self._pause_time)
-    self.paused_seconds = self.paused_seconds + second_paused
+function Tracker:_startTracking()
+    --needed for printing logs every minutes
+    self.log_time = os.time()
+
+    --needed for bot time calc | doesn't reset until script changed
+    --TODO: reset when bot account changed
+    self.start_time = self.start_time or os.time()
+    self.earnings = self.earnings or { [MONEY] = 0, [EXP] = 0 }  --setting make default prints
+    self.losses = self.losses or {}
+    --self.paused_seconds = 0
+
+    --prevent negative difftime values due to self._pause_time being nil
+    if self._pause_time then
+        local second_paused = os.difftime(os.time(), self._pause_time)
+        self.paused_seconds = self.paused_seconds + second_paused
+    end
+
 end
+
+function Tracker:_stopTracking()
+    --needed for bot time calc
+    self._pause_time = os.time()
+end
+
 
 --periodic updates
 function Tracker:onPathAction()
