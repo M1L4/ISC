@@ -55,15 +55,15 @@ end
 
 
 --functions to be implemented
-function TrackedZoner:_onPathAction() log("_onPathAction not implemented yet.") end
+function TrackedZoner:_onPathAction()   log("_onPathAction not implemented yet.")   end
 function TrackedZoner:_onBattleAction() log("_onBattleAction not implemented yet.") end
 
 --added functions
 function TrackedZoner:setExpZone(area) self.exp_zone = area end
-function TrackedZoner:setMap(map)      self.exp_map = map end
+function TrackedZoner:setMap(map)      self.exp_map = map   end
 
 function TrackedZoner:setCatchUncaught(catch_uncaught)  self.catch_uncaught = catch_uncaught end
-function TrackedZoner:setCatchSpecials(map) self.catch_specials = catch_specials end
+function TrackedZoner:setCatchSpecials(catch_specials)  self.catch_specials = catch_specials end
 
 
 --api functions
