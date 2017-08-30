@@ -1,3 +1,4 @@
+local Item = require "libs.game.enum.items"
 local BattleMessage = require "libs.battle.enum.messages"
 local BattleMessageManager = require "libs.battle.message_manager"
 local DialogMessageManager = require "libs.dialog.message_manager"

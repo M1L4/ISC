@@ -72,7 +72,7 @@ end
 --- @return : list of team indexes of all pkm that can be leveled up
 --- @type : table (list of integers)
 function TeamManager.getPkmToLvl(level_cap)
-    return filter(TeamManager.getPkm(), TeamManager.isPkmToLvl, level_cap)
+    return filter(TeamManager.getPkm(), TeamManager.isPkmToLvlAlive, level_cap)
 end
 
 --- @summary : Searches the lowest leveled pkm under given level_cap
@@ -81,7 +81,7 @@ end
 --- @return : team index, of lowest leveled pkm under level_cap | nil, if none exists
 --- @type : integer | nil
 function TeamManager.getLowestPkmToLvl(level_cap)
-    return compare(TeamManager.getPkmToLvl(), minLvl)
+    return compare(TeamManager.getPkmToLvl(level_cap), minLvl)
 end
 
 --- @summary : Searches the lowest leveled pkm under given level_cap
