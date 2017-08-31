@@ -1,0 +1,133 @@
+--from https://pokemon-revolution-online.net/Forum/viewtopic.php?f=120&t=64597#at_1
+
+RepelTrickEntry = {
+    [374] = {33, "Hoenn Safari Zone Area 2", {M, D, N}}, --Beldum
+    [418] = {23, "Route 10", {M, D, N}}, --Buizel
+    [207] = {36, "Route 45", {M, D, N}}, --Gligar
+    [235] = {25, "Ruins of Alph", {M, D, N}}, --Smeargle
+    [605] = {23, "Moon B1F", {M, D, N}}, --Elgyem
+    [446] = {23, "Love Island", {M, D, N}}, --Munchlax
+    [133] = {25, "Kanto Safari Area 3", {M, D, N}}, --Eevee
+    [228] = {22, "Route 7", {M, D}}, --Houndour
+    [328] = {28, "Route 111 Desert", {M, D, N}}, --Trapinch
+    [90] = {18, "Trainers Valley", {M, D}}, --Shellder
+    [349] = {26, "Jura Cave", {M, D, N}}, --Feebas
+    [280] = {5, "Route 102", {M, D, N}}, --Ralts
+    [406] = {9, "Viridian Forest", {M, D, N}}, --Budew
+    [131] = {10, "Union Cave B2F", {M, D}}, --Lapras
+    [231] = {6, "Route 46", {M}}, --Phanpy
+    [204] = {20, "Route 5", {N}}, --Pineco
+    [113] = {25, "Kanto Safari Entrance", {N}}, --Chansey
+    [120] = {36, "Lilycove City", {M, N}}, --Staryu
+    [190] = {20, "Route 44", {M, D, N}},--Aipom
+    [184] = {23, "Route 111 South", {M, D, N}}, --Azumarill
+    [585] = {30, "Route 120", {M, D, N}}, --Deerling
+    --Membership only
+    [155] = {39, "Mt. Ember", {M}}, --Cyndaquil
+    [158] = {18, "Desert Lagoon", {D}}, --Totodile
+    [632] = {22, "National Park", {M, D, N}}, --Durant
+    [106] = {53, "Mt. Silver Lower Mountainside", {M, D, N}}, --Hitmonlee
+    [107] = {55, "Mt. Silver Upper Mountainside", {M, D, N}}, --Hitmonchan
+    [303] = {48, "Victory Road Hoenn B1F", {M, D, N}}, --Mawile
+    [302] = {26, "Jura Cave", {M, D}}, --Sableye
+    [669] = {50, "Water Path", {M, D}},--Flabebe
+    [690] = {36, "Route 107", {M, D, N}},--Skrelp
+    [595] = {10, "Route 116", {D}}, --Joltik
+    [532] = {15, "Granite Cave 1F", {M, D}}, --Timburr
+    [524] = {20, "Fiery Path", {M, D, N}}, --Roggenrola
+    [422] = {20, "Route 103", {M, D, N}}, --Shellos
+    [546] = {11, "Petalburg Woods", {M, D, N}}, --Cottonee
+    [131] = {41, "Icefall Back Cave", {M, D, N}}, --Lapras
+    [610] = {15, "Granite Cave B1F", {M, N}},--Axew
+    [143] = {20, "Route 11", {M, D}}, --Snorlax
+    [707] = {27, "Valley of Steel Western Peak", {M, N}}, --Klefki
+    [246] = {49, "Sevault Canyon", {M, D}}, --Larvitar
+    [403] = {18, "Route 36", {D}}, --Shinx
+    [449] = {18, "Desert Lagoon (land)", {M, D, N}},--Hippopotas
+    [607] = {17, "Pokémon Tower Underground", {M, D, N}},   --Litwick
+    [592] = {33, "Route 119A", {N}}, --Frillish
+    [594] = {36, "Route 134", {M, D, N}}, --Alomomola
+    [602] = {26, "Safari Exclusive", {M, D, N}}, --Tynamo
+    [451] = {21, "Route 114", {M, D}}, -- Skorupi
+    [529] = {43, "Victory Road Kanto 2F", {M, D, N}}, --Drilbur
+    [396] = {10, "Route 32", {M, D}}, --Starly
+    [214] = {43, "Route 28", {M, D, N}}, --Heracross
+    [183] = {10, "Union Cave B2F", {N}}, --Marill
+}
+
+PollutedRepelTrickEntry = {
+--["Dratini"] = {8, "Love Island - M/D/N", {Azurill/Carvanha, Clamperl and Psyduck spawn as well}},
+--["Bagon"] = {1, "Meteor Falls B1F 2R - M/D/N", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Plusle"] = {30, "Route 15", {M/D}},
+--["Minun"] = {30, "Route 15", {M/D}},
+--["Larvitar"] = {3, "Mt. Silver Lower Mountainside - M", {Hitmonlee spawns here as well}},
+--["Donphan"] = {2, "Mt. Silver Lower Mountainside - M/N", {Hitmonlee spawns here as well}},
+--["Electabuzz"] = {3, "Power Plant - M/D/N", {Pikachu and Pachirisu spawn there as well}},
+--["Togepi"] = {8, "Love Island - M/D", {Munchlax spawns as well}},
+--["Scyther - level 29"] = {1, "M/D/N", {Pinsir spawns as well}},
+--["Goomy"] = {5, "Dragons Den B1F - N", {Clefairy/Slugma & Slowbro spawn as well}},
+--["Gligar"] = {5, "Dragons Den B1F - M/D", {Clefairy/Slugma & Slowbro spawn as well}},
+--["Shroomish"] = {7, "Petalburg Woods - M/D/N", {Slakoth & Cottonee spawn as well}},
+--["Gible"] = {4, "Moon - M/D/N", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Clefairy"] = {9, "Moon - M/D/N", {Clefable/Solrock/Snubull/Lunatone & Golbat spawn spawn as well (lesser spawns)}},
+--["Corphish/Crawdaunt"] = {1, "Route 123", {M/D/N}},
+--["Vulpix/Growlithe"] = {7, "Route 37", {N}},
+--["Staryu"] = {5, "Olivine City - N", {removes Tentacool/Krabby (TIer1) & Corsola (Tier4)}},
+--["Staryu"] = {6, "Trainers Valley - N", {Shellder spawns as well}},
+--["Shellder"] = {5, "Olivine City - M/D/N", {removes Tentacool/Krabby (TIer1) & Corsola (Tier4); Staryu spawns as well}},
+--["Ditto - level 30"] = {3, "N", {Venomoth spawns as well}},
+--["Ditto - level 30"] = {4, "M/D/N", {Farfetch'd spawns there as well}},
+--["Skarmory"] = {0, "Route 113", {M/D/N}},
+--["Chansey"] = {4, "Kanto Safari Area 2", {removes 4 low tier spawns, level 25 sync removes another one and level 26 sync removes another one}},
+--["Cyndaquil"] = {2, "Safari Johto Mountain Zone - M/D", {Magneton spawns as well / Darumaka spawns at night as well}},
+--["Deino"] = {1, "Meteor Falls B1F 1R - D", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Darumaka"] = {2, "Safari Johto Mountain Zone - N", {Magneton and Cyndaquil spawn as well}},
+--["Budew"] = {8, "National Park - M/D", {Durant spawns there as well}},
+--["Foongus/Chikorita"] = {2, "Safari Johto Grass and Swamp Zone - M/D(Chiko)/N", {Scatterbug spawns as well}},
+--["Sandile"] = {4, "Route 111 Desert - M/D", {Trapinch spawns aswell}},
+--["Fletchinder, Aipom and Torchic - level 33"] = {6, "M/D/N(Aipom)", {Teddiursa/Spinarak & Miltank spawn as well}},
+--["Lapras"] = {7, "Green Path (Sevii Islands) - M/D/N", {Tentacruel spawns there as well}},
+--["Heracross - level 18"] = {2, "M/D", {Ekans spawns there as well}},
+--["Buizel - level 35"] = {5, "M/D/N", {Kingler spawns there as well}},
+--["Ferroseed"] = {6, "Valley of Steel Eastern Peak - M/D", {Bronzong spawns till level 38 as well}},
+--["Dratini"] = {8, "Love Island - M/D/N", {Azurill/Carvanha, Clamperl and Psyduck spawn as well}},
+--["Bagon"] = {1, "Meteor Falls B1F 2R - M/D/N", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Plusle"] = {30, "Route 15", {M/D}},
+--["Minun"] = {30, "Route 15", {M/D}},
+--["Larvitar"] = {3, "Mt. Silver Lower Mountainside - M", {Hitmonlee spawns here as well}},
+--["Donphan"] = {2, "Mt. Silver Lower Mountainside - M/N", {Hitmonlee spawns here as well}},
+--["Electabuzz"] = {3, "Power Plant - M/D/N", {Pikachu and Pachirisu spawn there as well}},
+--["Togepi"] = {8, "Love Island - M/D", {Munchlax spawns as well}},
+--["Scyther - level 29"] = {1, "M/D/N", {Pinsir spawns as well}},
+--["Goomy"] = {5, "Dragons Den B1F - N", {Clefairy/Slugma & Slowbro spawn as well}},
+--["Gligar"] = {5, "Dragons Den B1F - M/D", {Clefairy/Slugma & Slowbro spawn as well}},
+--["Shroomish"] = {7, "Petalburg Woods - M/D/N", {Slakoth & Cottonee spawn as well}},
+--["Gible"] = {4, "Moon - M/D/N", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Clefairy"] = {9, "Moon - M/D/N", {Clefable/Solrock/Snubull/Lunatone & Golbat spawn spawn as well (lesser spawns)}},
+--["Corphish/Crawdaunt"] = {1, "Route 123", {M/D/N}},
+--["Vulpix/Growlithe"] = {7, "Route 37", {N}},
+--["Staryu"] = {5, "Olivine City - N", {removes Tentacool/Krabby (TIer1) & Corsola (Tier4)}},
+--["Staryu"] = {6, "Trainers Valley - N", {Shellder spawns as well}},
+--["Shellder"] = {5, "Olivine City - M/D/N", {removes Tentacool/Krabby (TIer1) & Corsola (Tier4); Staryu spawns as well}},
+--["Ditto - level 30"] = {3, "N", {Venomoth spawns as well}},
+--["Ditto - level 30"] = {4, "M/D/N", {Farfetch'd spawns there as well}},
+--["Skarmory"] = {0, "Route 113", {M/D/N}},
+--["Chansey"] = {4, "Kanto Safari Area 2", {removes 4 low tier spawns, level 25 sync removes another one and level 26 sync removes another one}},
+--["Cyndaquil"] = {2, "Safari Johto Mountain Zone - M/D", {Magneton spawns as well / Darumaka spawns at night as well}},
+--["Deino"] = {1, "Meteor Falls B1F 1R - D", {Lunatone/Solrock & Clefairy spawn as well}},
+--["Darumaka"] = {2, "Safari Johto Mountain Zone - N", {Magneton and Cyndaquil spawn as well}},
+--["Budew"] = {8, "National Park - M/D", {Durant spawns there as well}},
+--["Foongus/Chikorita"] = {2, "Safari Johto Grass and Swamp Zone - M/D(Chiko)/N", {Scatterbug spawns as well}},
+--["Sandile"] = {4, "Route 111 Desert - M/D", {Trapinch spawns aswell}},
+--["Fletchinder, Aipom and Torchic - level 33"] = {6, "M/D/N(Aipom)", {Teddiursa/Spinarak & Miltank spawn as well}},
+--["Lapras"] = {7, "Green Path (Sevii Islands) - M/D/N", {Tentacruel spawns there as well}},
+--["Heracross - level 18"] = {2, "M/D", {Ekans spawns there as well}},
+--["Buizel - level 35"] = {5, "M/D/N", {Kingler spawns there as well}},
+--["Ferroseed"] = {6, "Valley of Steel Eastern Peak - M/D", {Bronzong spawns till level 38 as well}},
+}
+
+return RepelTrickEntry, PollutedRepelTrickEntry
+
+
+
+
