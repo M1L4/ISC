@@ -1,4 +1,4 @@
-local ItemValue = require("libs.game.data.item_value")
+local ItemValue = require("libs.game.data.item_values")
 local statNatureTable = require "libs.game.data.statNatureTable"
 local pathfinder = require("externas.proshinepathfinder.pathfinder.movetoapp")
 local HiddenPowerMgr = require "libs.game.impl.hidden_power"

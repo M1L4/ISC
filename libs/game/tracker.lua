@@ -25,7 +25,7 @@ function Tracker:init()
     self.heals = 0
 
     --earnings
-    self.earnings = nil
+    self.gains = nil
     self.losses = nil
 end
 
@@ -52,7 +52,7 @@ function Tracker:_startTracking()
     --TODO: reset when bot account changed
     self.start_time = self.start_time or os.time()
     self.start_money = self.start_money or getMoney()
-    self.earnings = self.earnings or { [Item.MONEY] = 0, [Item.EXP] = 0 } --setting make default prints
+    self.gains = self.gains or { [Item.MONEY] = 0, [Item.EXP] = 0 } --setting make default prints
     self.losses = self.losses or {}
     --self.paused_seconds = 0
 
@@ -96,7 +96,7 @@ function Tracker:onBattleMessage(msg)
     --earnings
     local items, amount = BattleMessageManager:getGains(msg)
     if items and amount then
-        self:_addDictEntries(self.earnings, { [items] = amount })
+        self:_addDictEntries(self.gains, { [items] = amount })
     end
 
     --losses
@@ -110,7 +110,7 @@ function Tracker:onDialogMessage(msg)
     --earnings
     local items, amount = DialogMessageManager:getGains(msg)
     if items and amount then
-        self:_addDictEntries(self.earnings, { [items] = amount })
+        self:_addDictEntries(self.gains, { [items] = amount })
     end
 
     --losses
@@ -151,9 +151,9 @@ end
 function Tracker:printGainsMain()
     for _, item in pairs({ Item.MONEY, Item.EXP }) do
         -- to make an accurate money per minute print
-        local amount = self.earnings[item]
+        local amount = self.gains[item]
 
-        if item == Item.MONEY then amount = self.getGainValue() - self.getLossValue() end
+        if item == Item.MONEY then amount = self:getGainValue() - self:getLossValue() end
 
         --Item.MONEY and Item.EXP gained, will be averaged
         local avgMin = math.floor(amount / self:_getMinutesElapsed())
@@ -174,7 +174,7 @@ end
 --- @return :
 --- @type : void
 function Tracker:printGainsRest()
-    for item, amount in pairs(self.earnings) do
+    for item, amount in pairs(self.gains) do
         if item ~= Item.MONEY and item ~= Item.EXP then
             --prints items gained
             log("INFO | " .. tostring(amount) .. "\t" .. item)
@@ -238,11 +238,11 @@ function Tracker:_addDictEntries(dict, entries)
 end
 
 function Tracker:getLossValue() return self:_getValueFrom(self.losses) end
-function Tracker:getGainValue() return self:_getValueFrom(self.gains) end
+function Tracker:getGainValue() return self:_getValueFrom(self.gains)  end
 
-function Tracker:_getValueFrom()
+function Tracker:_getValueFrom(balance)
     local lossOrGain = 0
-    for item, amount in pairs(self.losses) do
+    for item, amount in pairs(balance) do
         if item ~= Item.EXP then
             --its an item
             local item_value = ItemValue[item]
