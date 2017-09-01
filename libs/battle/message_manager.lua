@@ -3,7 +3,7 @@ local Item = require "libs.game.enum.items"
 DialogManager = {}
 
 local berry_tree = nil
-function DialogManager:getEarnings(msg)
+function DialogManager:getGains(msg)
     --retrieve vars from regex expression
     local item, amount = nil, nil
     if string.match(msg, BattleMessage.EXP) then
@@ -35,6 +35,12 @@ function DialogManager:getLosses(msg)
         --TODO: integrate this part in BattleMessage.THROW regex
         item = string.match(msg, "%b]["):sub(2, -2) --ball
         amount = 1
+
+    elseif string.match(msg, BattleMessage.LOST) then
+        --TODO: repeated gym losses don't cost money
+        item = BattleMessage.LOST
+        amount = (getMoney()/0.95) * 0.05   -- money/0,95 = original amount | 5% is the known faktor when feinting
+
 
 
     --Escape ropes

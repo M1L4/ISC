@@ -1,4 +1,5 @@
 local Item = require "libs.game.enum.items"
+local ItemValue = "libs.game.data.item_values"
 local BattleMessage = require "libs.battle.enum.messages"
 local BattleMessageManager = require "libs.battle.message_manager"
 local DialogMessageManager = require "libs.dialog.message_manager"
@@ -30,12 +31,14 @@ end
 
 
 --bot controls
-function Tracker:onStart()  self:_startTracking() end
+function Tracker:onStart() self:_startTracking() end
 function Tracker:onResume() self:_startTracking() end
+
 function Tracker:onStop()
     self:_stopTracking()
     self:printFullLog()
 end
+
 function Tracker:onPause()
     self:_stopTracking()
     self:printFullLog()
@@ -49,7 +52,7 @@ function Tracker:_startTracking()
     --TODO: reset when bot account changed
     self.start_time = self.start_time or os.time()
     self.start_money = self.start_money or getMoney()
-    self.earnings = self.earnings or { [Item.MONEY] = 0, [Item.EXP] = 0 }  --setting make default prints
+    self.earnings = self.earnings or { [Item.MONEY] = 0, [Item.EXP] = 0 } --setting make default prints
     self.losses = self.losses or {}
     --self.paused_seconds = 0
 
@@ -58,7 +61,6 @@ function Tracker:_startTracking()
         local second_paused = os.difftime(os.time(), self._pause_time)
         self.paused_seconds = self.paused_seconds + second_paused
     end
-
 end
 
 function Tracker:_stopTracking()
@@ -92,7 +94,7 @@ function Tracker:onBattleMessage(msg)
     end
 
     --earnings
-    local items, amount = BattleMessageManager:getEarnings(msg)
+    local items, amount = BattleMessageManager:getGains(msg)
     if items and amount then
         self:_addDictEntries(self.earnings, { [items] = amount })
     end
@@ -106,7 +108,7 @@ end
 
 function Tracker:onDialogMessage(msg)
     --earnings
-    local items, amount = DialogMessageManager:getEarnings(msg)
+    local items, amount = DialogMessageManager:getGains(msg)
     if items and amount then
         self:_addDictEntries(self.earnings, { [items] = amount })
     end
@@ -121,17 +123,17 @@ end
 
 --some local needed functions
 function Tracker:printSmallLog()
-    log("INFO | --Earnings--")
-    self:printEarningsMain()
+    log("INFO | --Gains--")
+    self:printGainsMain()
 end
 
 function Tracker:printFullLog()
     self:printBotTime()
     self:printHeals()
     self:_printWildEncounters()
-    log("INFO | --Earnings--")
-    self:printEarningsMain()
-    self:printEarningsRest()
+    log("INFO | --Gains--")
+    self:printGainsMain()
+    self:printGainsRest()
 end
 
 --- @summary :
@@ -146,11 +148,12 @@ function Tracker:_printWildEncounters()
 end
 
 
-function Tracker:printEarningsMain()
+function Tracker:printGainsMain()
     for _, item in pairs({ Item.MONEY, Item.EXP }) do
         -- to make an accurate money per minute print
-        -- TODO: getLossesValue() has to be implemented
-        local amount = getMoney() - self.start_money --self.earnings[item]
+        local amount = self.earnings[item]
+
+        if item == Item.MONEY then amount = self.getGainValue() - self.getLossValue() end
 
         --Item.MONEY and Item.EXP gained, will be averaged
         local avgMin = math.floor(amount / self:_getMinutesElapsed())
@@ -159,7 +162,7 @@ function Tracker:printEarningsMain()
         local align = "\t"
         if item == Item.EXP then align = "\t\t" end
 
-        log("INFO | " .. item .. ":"..align
+        log("INFO | " .. item .. ":" .. align
             --trim Item.EXP to 2 digits after comma
             .. kFormatter(amount) .. " total | "
             .. kFormatter(avgMin) .. " per min | "
@@ -170,7 +173,7 @@ end
 --- @summary :
 --- @return :
 --- @type : void
-function Tracker:printEarningsRest()
+function Tracker:printGainsRest()
     for item, amount in pairs(self.earnings) do
         if item ~= Item.MONEY and item ~= Item.EXP then
             --prints items gained
@@ -190,9 +193,9 @@ end
 --- @return :
 --- @type : string
 function Tracker:printBotTime()
-    local hours = self:_getHoursElapsed();          --no upper limit
-    local mins = self:_getMinutesElapsed() % 60;    --upper limit 59, achieved via modulo
-    local secs = self:_getSecondsElapsed() % 60;    --upper limit 59, achieved via modulo
+    local hours = self:_getHoursElapsed(); --no upper limit
+    local mins = self:_getMinutesElapsed() % 60; --upper limit 59, achieved via modulo
+    local secs = self:_getSecondsElapsed() % 60; --upper limit 59, achieved via modulo
 
     local bottime = string.format("%02dh %02dm %02ds", hours, mins, secs)
     log("INFO | --Bottime: " .. bottime .. "--")
@@ -233,5 +236,24 @@ function Tracker:_addDictEntries(dict, entries)
         end
     end
 end
+
+function Tracker:getLossValue() return self:_getValueFrom(self.losses) end
+function Tracker:getGainValue() return self:_getValueFrom(self.gains) end
+
+function Tracker:_getValueFrom()
+    local lossOrGain = 0
+    for item, amount in pairs(self.losses) do
+        if item ~= Item.EXP then
+            --its an item
+            local item_value = ItemValue[item]
+            if item_value then amount = amount * item_value end
+
+            --not an item treated as money | feinting
+            lossOrGain = lossOrGain + amount
+        end
+    end
+    return lossOrGain
+end
+
 
 return Tracker

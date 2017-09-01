@@ -3,7 +3,7 @@ local DialogMessage = require "libs.dialog.enum.messages"
 DialogManager = {}
 
 local berry_tree = nil
-function DialogManager:getEarnings(msg)
+function DialogManager:getGains(msg)
     --find correct pattern
     local pattern = nil
     if string.match(msg, DialogMessage.FOUND) then

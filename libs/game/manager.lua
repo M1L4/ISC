@@ -1,4 +1,4 @@
-local ItemPrice = require("libs.game.data.itemPrices")
+local ItemValue = require("libs.game.data.item_value")
 local statNatureTable = require "libs.game.data.statNatureTable"
 local pathfinder = require("externas.proshinepathfinder.pathfinder.movetoapp")
 local HiddenPowerMgr = require "libs.game.impl.hidden_power"
@@ -10,7 +10,7 @@ function GameManager.restockItems(item, target_amount, buy_at)
     if getItemQuantity(item) > buy_treshold then return end
 
 
-    local maxBalls = math.floor(getMoney() / ItemPrice[item])
+    local maxBalls = math.floor(getMoney() / ItemValue[item])
     local ballAmount = target_amount - getItemQuantity(item)
     local min = math.min(maxBalls, ballAmount)
 

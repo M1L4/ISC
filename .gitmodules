@@ -1,3 +1,12 @@
 [submodule "Externas/libs/routing/proShinePathfinder"]
 	path = Externas/libs/routing/proShinePathfinder
 	url = ../../Zonz/ProShinePathfinder.git
+[submodule "externas/wiwi33_questing"]
+	path = externas/wiwi33_questing
+	url = https://github.com/M1L4/Questing.lua.git
+[submodule "externas/Universal"]
+	path = externas/Universal
+	url = https://github.com/Crazy3001/Universal.git
+[submodule "externas/proShinePathfinder"]
+	path = externas/proShinePathfinder
+	url = https://github.com/Zonz/ProShinePathfinder.git
