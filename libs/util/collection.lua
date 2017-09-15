@@ -77,6 +77,7 @@ function compare(t, fn)
 end
 
 function filter(t, fn, ...)
+    if not t then return end
     local newtbl = {}
     for key, value in pairs(t) do
         if fn(key, ...) then

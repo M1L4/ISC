@@ -153,7 +153,9 @@ end
 
 --additional needed functions
 function Leveler:getSwitchIn()
-    for _, index in pairs(TeamManager.getUsablePkmToLvl(self.lvl_cap)) do
+    local toLvl = TeamManager.getUsablePkmToLvl(self.lvl_cap)
+    if not toLvl then return end
+    for _, index in pairs(toLvl) do
 
         --level is higher by at least getMinLevelAdv(index)
         local lvl_dif = getPokemonLevel(index) - getOpponentLevel()

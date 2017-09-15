@@ -1,5 +1,5 @@
 SystemMessages = {
-    NO_HM = "$NoHM",
-    AFK = "$AFK",
-    NO_AFK = "NoAFK",
+    NO_HM 	= "$NoHM",
+    AFK 	= "$AFK",
+    NO_AFK 	= "NoAFK",
 }

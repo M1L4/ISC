@@ -6,14 +6,15 @@ local Ability = require "libs.game.enum.abilities"
 local BattleManager = require "libs.battle.manager"
 require "libs.util.collection" --imports Set class, and max() method
 
+--|x, y| x + y is shorthand for function(x,y) return x+y end.
 
 
 --comparers
-local function maxLvl(a, b) return getPokemonLevel(b) >= getPokemonLevel(a) end     --lesser **equal** is necesarry to avoid swaping same lvled pkm
-local function minLvl(a, b) return getPokemonLevel(b) <= getPokemonLevel(a) end     --lesser **equal** is necesarry to avoid swaping same lvled pkm
+local function maxLvl(a, b) return getPokemonLevel(b) >= getPokemonLevel(a) end     --**greater equal** is necesarry to avoid swaping same lvled pkm
+local function minLvl(a, b) return getPokemonLevel(b) < getPokemonLevel(a) end      --lesser is necesarry to avoid swaping same lvled pkm
 --misc
-local function first(t) if #t > 0 then return t[1] end end
-local function last(t) if #t > 0 then return t[#t] end end
+local function first(t) t = t or {} if #t > 0 then return t[1] end end
+local function last(t) t = t or {} if #t > 0 then return t[#t] end end
 
 TeamManager = {}
 --pkm conditions
@@ -26,7 +27,7 @@ function TeamManager.isPkmToLvlUsable(i, lvl_cap) return BattleManager.isUsable(
 function TeamManager.hasPkmItem(i, item) return getPokemonHeldItem(i) == item end
 function TeamManager.hasPkmAbility(i, abilty) return getPokemonAbility(i) == abilty end
 function TeamManager.hasPkmNature(i, nature) return getPokemonNature(i) == nature end
-function TeamManager.hasPkmMove(i, move) return hasMove(i) == move end
+function TeamManager.hasPkmMove(i, move) return hasMove(i, move) end
 
 --- @summary : healing conditions:
 -- last poke under 50%hp
@@ -44,26 +45,44 @@ function TeamManager.isUsable(healthTresholdLast, healthTresholdTeam, ppTreshhol
     local healthTresholdTeam = healthTresholdTeam or 20 --20%
     local ppTreshhold = ppTreshholdLast or 5
 
-    local aboveHealthTresholdTeam = 0
+--    local aboveHealthTresholdTeam = 0
+--
+--    for index = 1, getTeamSize() do
+--        local health = getPokemonHealthPercent(index)
+--        local pp = BattleManager.getPPofUsableAttacks(index)
+--
+--        --no healing, if one poke has 50% health and at least 5pp (default values)
+--        if health > healthTresholdLast and pp > ppTreshhold then
+--            return false
+--        end
+--
+--        --no healing, 2 or more have more then 20% health and at least 1pp each
+--        if health > healthTresholdTeam and pp > 0 then
+--            aboveHealthTresholdTeam = aboveHealthTresholdTeam + 1
+--        end
+--    end
+--
+--    --need to account for the last one standing, so at least 2 have to be
+--    --above team health tresh hold
+--    return aboveHealthTresholdTeam > 1
 
-    for index = 1, getTeamSize() do
-        local health = getPokemonHealthPercent(index)
-        local pp = BattleManager.getPPofUsableAttacks(index)
+  --TODO: different healing grades: green - hunt, yellow - move towards pokecenter, red - flee from every battle
 
-        --no healing, if one poke has 50% health and at least 5pp (default values)
-        if health > healthTresholdLast and pp > ppTreshhold then
-            return false
-        end
+    --copied from pathfinder, seemd simple and efficient :D
+    if getTeamSize() == 1                       -- a single pokemon has to be over 65 (only true for starters though)
+        and getPokemonHealthPercent(1) <= 65
 
-        --no healing, 2 or more have more then 20% health and at least 1pp each
-        if health > healthTresholdTeam and pp > 0 then
-            aboveHealthTresholdTeam = aboveHealthTresholdTeam + 1
-        end
+        or getUsablePokemonCount() <= 1         -- or we reached our last pkm
+    then return false end
+
+    --some personalizations
+    local ppCount = 0
+    for _, teamIndex in ipairs(TeamManager.getAlivePkm()) do
+        ppCount = ppCount + BattleManager.getPPofAllAttacks(teamIndex)
     end
 
-    --need to account for the last one standing, so at least 2 have to be
-    --above team health tresh hold
-    return aboveHealthTresholdTeam > 1
+    return ppCount > 5 --at least 5pp to avoid being trapped
+
 end
 
 --- @summary : fetches all pkm under given level cap
@@ -212,7 +231,7 @@ end
 
 --- @summary : provides couverage for proShine's unused attacks
 function TeamManager.getUsablePkm()
-    return filter(TeamManager.getPkm(), BattleManager.isUsable, itemName)
+    return filter(TeamManager.getPkm(), BattleManager.isUsable)
 end
 
 function TeamManager.getFirstUsablePkm()
@@ -222,14 +241,10 @@ end
 
 function TeamManager.giveLeftoversTo(leftoversTarget)
     --correct pkm already has leftovers
-    log("DEBUG | hasPkmItem: "..tostring(TeamManager.hasPkmItem(leftoversTarget, Item.LEFTOVERS)))
     if TeamManager.hasPkmItem(leftoversTarget, Item.LEFTOVERS) then return end
 
     --leftoversTarget not in team range
-    if leftoversTarget < 1 or leftoversTarget > getTeamSize() then
-        log("Error | wrong leftoversTarget: "..tostring(leftoversTarget))
-        return
-    end
+    if leftoversTarget < 1 or leftoversTarget > getTeamSize() then return end
 
     --remove item, if pkm is already holding one
     if getPokemonHeldItem(leftoversTarget) then takeItemFromPokemon(leftoversTarget) end
@@ -239,8 +254,11 @@ function TeamManager.giveLeftoversTo(leftoversTarget)
 
     --take leftovers if necessary | last because it allows starter to hold leftovers as well
     local pkmWithLeftovers = TeamManager.getLastPkmWithItem(Item.LEFTOVERS)
-    log("DEBUG | pkmWithLeftovers: "..tostring(pkmWithLeftovers))
     if pkmWithLeftovers then return takeItemFromPokemon(pkmWithLeftovers) end
 end
+
+
+--TODO: getLowestLvlPkm
+--add levelels, health, pp...
 
 return TeamManager

@@ -52,20 +52,31 @@ function BattleManager.getPPofUsableAttacks(teamIndex)
 
             --personal restriction
             and moveName ~= Attack.FALSE_SWIPE
+            and moveName ~= Attack.DREAM_EATER  --needs a sleeping target to deal dmg
+            and moveName ~= Attack.NIGHTMARE    --same
 
             --move restriction
-            and getPokemonMovePower(teamIndex, i) > 0
-            and getRemainingPowerPoints(teamIndex, moveName) > 0 then
-            count = count + 1
+            and getPokemonMovePower(teamIndex, i) > 0 then
+                count = count + getRemainingPowerPoints(teamIndex, moveName)
         end
     end
     return count
 end
 
+function BattleManager.getPPofAllAttacks(teamIndex)
+    local count = 0
+    for i = 1, 4 do
+        --if pkm has less than 4 moves
+        local moveName = getPokemonMoveName(teamIndex, i)
+        if moveName then count = count + getRemainingPowerPoints(teamIndex, moveName) end
+    end
+    return count
+end
+
+
+
 function BattleManager.isUsable(teamIndex)
-    --TODO: integration of isPokemonUsable(teamIndex), so only personl restrictions have to be implemented
-    --return
-    return getPokemonHealth(teamIndex) > 0
+    return isPokemonUsable(teamIndex)
         and BattleManager.hasUsableAttack(teamIndex)
 end
 

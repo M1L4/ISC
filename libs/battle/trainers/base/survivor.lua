@@ -79,4 +79,11 @@ function Survivor:onBattleMessage(message)
     end
 end
 
+function Survivor:onStart()
+    if isPrivateMessageEnabled() then
+        log("Private messages disabled.")
+        return disablePrivateMessage()
+    end
+end
+
 return Survivor

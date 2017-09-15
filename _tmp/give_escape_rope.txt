@@ -1,0 +1,4 @@
+
+function onPathAction()
+	giveItemToPokemon("EscapeRope", 1)
+end

@@ -45,6 +45,7 @@ function TrackedZoner:init()
 end
 
 function TrackedZoner:onStart()
+    Survivor:onStart()
     self.tracker:onStart()
 
     --TODO: enable auto-reconnect, when available via proshine?

@@ -18,6 +18,9 @@ local Item = {
     --misc
     POKEDEX = "Pokedex",
     POTION = "Potion",
+    ESCAPE_ROPE = "Escape Rope",
+
+    --Held Items
     LEFTOVERS = "Leftovers",
 
     --battle
